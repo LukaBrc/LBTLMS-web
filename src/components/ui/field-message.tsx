@@ -1,0 +1,6 @@
+import type { HTMLAttributes } from 'react'
+import { cn } from '../../lib/utils'
+
+export function FieldMessage({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) {
+  return <p className={cn('mt-1 text-xs text-[var(--danger)]', className)} {...props} />
+}
