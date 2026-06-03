@@ -31,6 +31,9 @@ export function BorrowsPage() {
     queryFn: getOverdueBorrows,
   })
 
+  const activeQueryError = activeQuery.isError ? normalizeApiError(activeQuery.error) : null
+  const overdueQueryError = overdueQuery.isError ? normalizeApiError(overdueQuery.error) : null
+
   const borrowMutation = useMutation({
     mutationFn: borrowBook,
     onSuccess: async () => {
@@ -90,14 +93,18 @@ export function BorrowsPage() {
       />
       {activeQuery.isLoading && <p className="text-sm text-[var(--muted)]">Loading active borrows...</p>}
       {activeQuery.isError && (
-        <p className="text-sm font-semibold text-[var(--danger)]">Failed to load active borrows.</p>
+        <p className="text-sm font-semibold text-[var(--danger)]">
+          Failed to load active borrows. {activeQueryError?.message}
+        </p>
       )}
       {activeQuery.isSuccess && (
         <BorrowsTable borrows={activeQuery.data} title="Active Borrows" />
       )}
       {overdueQuery.isLoading && <p className="text-sm text-[var(--muted)]">Loading overdue borrows...</p>}
       {overdueQuery.isError && (
-        <p className="text-sm font-semibold text-[var(--danger)]">Failed to load overdue borrows.</p>
+        <p className="text-sm font-semibold text-[var(--danger)]">
+          Failed to load overdue borrows. {overdueQueryError?.message}
+        </p>
       )}
       {overdueQuery.isSuccess && (
         <BorrowsTable borrows={overdueQuery.data} title="Overdue Borrows" />

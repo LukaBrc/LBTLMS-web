@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Button } from '../../components/ui/button'
@@ -6,6 +7,7 @@ import { Card } from '../../components/ui/card'
 import { FieldMessage } from '../../components/ui/field-message'
 import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
+import { getAuthors } from '../authors/authors.api'
 import type { Book } from './books.api'
 import { bookFormSchema, type BookFormValues } from './books.schemas'
 
@@ -24,6 +26,15 @@ export function BookForm({
   onCancelEdit,
   serverFieldErrors,
 }: BookFormProps) {
+  const authorsQuery = useQuery({
+    queryKey: ['authors'],
+    queryFn: getAuthors,
+  })
+
+  const authorOptions = (authorsQuery.data ?? [])
+    .filter((author) => author.id !== undefined)
+    .sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
+
   const {
     register,
     handleSubmit,
@@ -74,8 +85,24 @@ export function BookForm({
           )}
         </div>
         <div>
-          <Label htmlFor="authorId">Author ID</Label>
-          <Input id="authorId" type="number" min={1} {...register('authorId', { valueAsNumber: true })} />
+          <Label htmlFor="authorId">Author</Label>
+          <select
+            id="authorId"
+            className="h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm outline-none ring-[var(--brand)] transition focus:ring-2"
+            disabled={isSubmitting || authorsQuery.isLoading || authorsQuery.isError}
+            {...register('authorId', { valueAsNumber: true })}
+          >
+            <option value={0}>Select an author</option>
+            {authorOptions.map((author) => (
+              <option key={author.id} value={author.id}>
+                {author.name || `Author #${author.id}`}
+              </option>
+            ))}
+          </select>
+          {authorsQuery.isLoading && <p className="mt-1 text-xs text-[var(--muted)]">Loading authors...</p>}
+          {authorsQuery.isError && (
+            <FieldMessage>Failed to load authors. Please refresh and try again.</FieldMessage>
+          )}
           {(errors.authorId?.message || serverFieldErrors?.authorId) && (
             <FieldMessage>{errors.authorId?.message || serverFieldErrors?.authorId}</FieldMessage>
           )}

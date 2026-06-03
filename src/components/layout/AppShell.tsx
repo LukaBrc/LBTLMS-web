@@ -17,10 +17,9 @@ export function AppShell({ children }: PropsWithChildren) {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">LBTLMS</p>
-            <h1 className="mt-2 text-3xl sm:text-4xl">Library Management UI</h1>
+            <h1 className="mt-2 text-3xl sm:text-4xl">LBT - Library Management System</h1>
             <p className="mt-2 max-w-xl text-sm text-[var(--muted)]">
-              A typed frontend connected to your Spring Boot backend with React Query, form validation,
-              and reusable API patterns.
+              Welcome to your library management system! Use the navigation below to manage authors, books, members, and borrows.
             </p>
           </div>
           <p className="rounded-full bg-[var(--brand-soft)] px-4 py-2 text-sm font-semibold text-[var(--brand)]">
