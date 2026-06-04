@@ -86,22 +86,46 @@ export function BookForm({
         </div>
         <div>
           <Label htmlFor="authorId">Author</Label>
-          <select
-            id="authorId"
-            className="h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm outline-none ring-[var(--brand)] transition focus:ring-2"
-            disabled={isSubmitting || authorsQuery.isLoading || authorsQuery.isError}
-            {...register('authorId', { valueAsNumber: true })}
-          >
-            <option value={0}>Select an author</option>
-            {authorOptions.map((author) => (
-              <option key={author.id} value={author.id}>
-                {author.name || `Author #${author.id}`}
-              </option>
-            ))}
-          </select>
+          {authorsQuery.isError ? (
+            <Input
+              id="authorId"
+              type="number"
+              min={1}
+              placeholder="Author ID"
+              disabled={isSubmitting}
+              {...register('authorId', { valueAsNumber: true })}
+            />
+          ) : (
+            <select
+              id="authorId"
+              className="h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm outline-none ring-[var(--brand)] transition focus:ring-2"
+              disabled={isSubmitting || authorsQuery.isLoading}
+              {...register('authorId', { valueAsNumber: true })}
+            >
+              <option value={0}>Select an author</option>
+              {authorOptions.map((author) => (
+                <option key={author.id} value={author.id}>
+                  {author.name || `Author #${author.id}`}
+                </option>
+              ))}
+            </select>
+          )}
           {authorsQuery.isLoading && <p className="mt-1 text-xs text-[var(--muted)]">Loading authors...</p>}
           {authorsQuery.isError && (
-            <FieldMessage>Failed to load authors. Please refresh and try again.</FieldMessage>
+            <div className="mt-1 flex items-center gap-2">
+              <FieldMessage className="mt-0">Could not load authors list. Enter Author ID manually.</FieldMessage>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  void authorsQuery.refetch()
+                }}
+                disabled={isSubmitting || authorsQuery.isFetching}
+              >
+                {authorsQuery.isFetching ? 'Retrying...' : 'Retry'}
+              </Button>
+            </div>
           )}
           {(errors.authorId?.message || serverFieldErrors?.authorId) && (
             <FieldMessage>{errors.authorId?.message || serverFieldErrors?.authorId}</FieldMessage>

@@ -14,17 +14,15 @@ React + TypeScript + Vite frontend for the LBTLMS Spring Boot backend.
 - TanStack Table
 - Sonner toasts
 - Vitest + React Testing Library
-- ESLint + Prettier + Husky + lint-staged
+- ESLint + Prettier + lint-staged
 
 ## Setup
 
 1. Install dependencies:
    npm install
-2. Configure env file:
-   Copy .env.example to .env and adjust values if needed.
-3. Generate OpenAPI types (optional if backend is running):
+2. Generate OpenAPI types (optional if backend is running):
    npm run generate:api
-4. Start dev server:
+3. Start dev server:
    npm run dev
 
 ## Commands

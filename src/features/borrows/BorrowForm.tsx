@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { Button } from '../../components/ui/button'
 import { Card } from '../../components/ui/card'
 import { FieldMessage } from '../../components/ui/field-message'
+import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
 import { getBooks } from '../books/books.api'
 import { getMembers } from '../members/members.api'
@@ -35,9 +36,6 @@ export function BorrowForm({ isSubmitting, onSubmit, action }: BorrowFormProps) 
     .filter((member) => member.memberId !== undefined)
     .sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
 
-  const isSelectLoading = booksQuery.isLoading || membersQuery.isLoading
-  const isSelectError = booksQuery.isError || membersQuery.isError
-
   const {
     register,
     handleSubmit,
@@ -64,40 +62,78 @@ export function BorrowForm({ isSubmitting, onSubmit, action }: BorrowFormProps) 
       >
         <div>
           <Label htmlFor="isbn">Book</Label>
-          <select
-            id="isbn"
-            className="h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm outline-none ring-[var(--brand)] transition focus:ring-2"
-            disabled={isSubmitting || isSelectLoading || isSelectError}
-            {...register('isbn')}
-          >
-            <option value="">Select a book</option>
-            {bookOptions.map((book) => (
-              <option key={book.isbn} value={book.isbn}>
-                {book.title ? `${book.title} (${book.isbn})` : book.isbn}
-              </option>
-            ))}
-          </select>
+          {booksQuery.isError ? (
+            <Input id="isbn" placeholder="ISBN" disabled={isSubmitting} {...register('isbn')} />
+          ) : (
+            <select
+              id="isbn"
+              className="h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm outline-none ring-[var(--brand)] transition focus:ring-2"
+              disabled={isSubmitting || booksQuery.isLoading}
+              {...register('isbn')}
+            >
+              <option value="">Select a book</option>
+              {bookOptions.map((book) => (
+                <option key={book.isbn} value={book.isbn}>
+                  {book.title ? `${book.title} (${book.isbn})` : book.isbn}
+                </option>
+              ))}
+            </select>
+          )}
           {booksQuery.isLoading && <p className="mt-1 text-xs text-[var(--muted)]">Loading books...</p>}
-          {booksQuery.isError && <FieldMessage>Failed to load books. Please refresh and try again.</FieldMessage>}
+          {booksQuery.isError && (
+            <div className="mt-1 flex items-center gap-2">
+              <FieldMessage className="mt-0">Could not load books list. Enter ISBN manually.</FieldMessage>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  void booksQuery.refetch()
+                }}
+                disabled={isSubmitting || booksQuery.isFetching}
+              >
+                {booksQuery.isFetching ? 'Retrying...' : 'Retry'}
+              </Button>
+            </div>
+          )}
           {errors.isbn?.message && <FieldMessage>{errors.isbn.message}</FieldMessage>}
         </div>
         <div>
           <Label htmlFor="memberId">Member</Label>
-          <select
-            id="memberId"
-            className="h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm outline-none ring-[var(--brand)] transition focus:ring-2"
-            disabled={isSubmitting || isSelectLoading || isSelectError}
-            {...register('memberId')}
-          >
-            <option value="">Select a member</option>
-            {memberOptions.map((member) => (
-              <option key={member.memberId} value={member.memberId}>
-                {member.name ? `${member.name} (${member.memberId})` : member.memberId}
-              </option>
-            ))}
-          </select>
+          {membersQuery.isError ? (
+            <Input id="memberId" placeholder="Member ID" disabled={isSubmitting} {...register('memberId')} />
+          ) : (
+            <select
+              id="memberId"
+              className="h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm outline-none ring-[var(--brand)] transition focus:ring-2"
+              disabled={isSubmitting || membersQuery.isLoading}
+              {...register('memberId')}
+            >
+              <option value="">Select a member</option>
+              {memberOptions.map((member) => (
+                <option key={member.memberId} value={member.memberId}>
+                  {member.name ? `${member.name} (${member.memberId})` : member.memberId}
+                </option>
+              ))}
+            </select>
+          )}
           {membersQuery.isLoading && <p className="mt-1 text-xs text-[var(--muted)]">Loading members...</p>}
-          {membersQuery.isError && <FieldMessage>Failed to load members. Please refresh and try again.</FieldMessage>}
+          {membersQuery.isError && (
+            <div className="mt-1 flex items-center gap-2">
+              <FieldMessage className="mt-0">Could not load members list. Enter Member ID manually.</FieldMessage>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  void membersQuery.refetch()
+                }}
+                disabled={isSubmitting || membersQuery.isFetching}
+              >
+                {membersQuery.isFetching ? 'Retrying...' : 'Retry'}
+              </Button>
+            </div>
+          )}
           {errors.memberId?.message && <FieldMessage>{errors.memberId.message}</FieldMessage>}
         </div>
         <Button type="submit" disabled={isSubmitting}>
