@@ -14,7 +14,7 @@ React + TypeScript + Vite frontend for the LBTLMS Spring Boot backend.
 - TanStack Table
 - Sonner toasts
 - Vitest + React Testing Library
-- ESLint + Prettier + lint-staged
+- ESLint + Prettier + Husky + lint-staged
 
 ## Setup
 
