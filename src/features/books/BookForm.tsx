@@ -26,6 +26,8 @@ export function BookForm({
   onCancelEdit,
   serverFieldErrors,
 }: BookFormProps) {
+  const isEditing = editingBook !== null
+
   const authorsQuery = useQuery({
     queryKey: ['authors'],
     queryFn: getAuthors,
@@ -133,7 +135,15 @@ export function BookForm({
         </div>
         <div>
           <Label htmlFor="isbn">ISBN</Label>
-          <Input id="isbn" placeholder="ISBN" {...register('isbn')} />
+          <Input
+            id="isbn"
+            placeholder="ISBN"
+            readOnly={isEditing}
+            aria-readonly={isEditing}
+            className={isEditing ? 'bg-[var(--bg-muted)] text-[var(--muted)]' : undefined}
+            {...register('isbn')}
+          />
+          {isEditing && <p className="mt-1 text-xs text-[var(--muted)]">ISBN cannot be changed while editing.</p>}
           {(errors.isbn?.message || serverFieldErrors?.isbn) && (
             <FieldMessage>{errors.isbn?.message || serverFieldErrors?.isbn}</FieldMessage>
           )}

@@ -24,6 +24,8 @@ export function MemberForm({
   onCancelEdit,
   serverFieldErrors,
 }: MemberFormProps) {
+  const isEditing = editingMember !== null
+
   const {
     register,
     handleSubmit,
@@ -71,7 +73,15 @@ export function MemberForm({
         </div>
         <div>
           <Label htmlFor="memberId">Member ID</Label>
-          <Input id="memberId" placeholder="Member ID" {...register('memberId')} />
+          <Input
+            id="memberId"
+            placeholder="Member ID"
+            readOnly={isEditing}
+            aria-readonly={isEditing}
+            className={isEditing ? 'bg-[var(--bg-muted)] text-[var(--muted)]' : undefined}
+            {...register('memberId')}
+          />
+          {isEditing && <p className="mt-1 text-xs text-[var(--muted)]">Member ID cannot be changed while editing.</p>}
           {(errors.memberId?.message || serverFieldErrors?.memberId) && (
             <FieldMessage>{errors.memberId?.message || serverFieldErrors?.memberId}</FieldMessage>
           )}

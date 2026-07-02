@@ -77,7 +77,13 @@ export function BooksPage() {
 
   async function handleSubmit(values: BookFormValues) {
     if (editingBook && editingBook.isbn) {
-      await updateMutation.mutateAsync({ isbn: editingBook.isbn, values })
+      await updateMutation.mutateAsync({
+        isbn: editingBook.isbn,
+        values: {
+          ...values,
+          isbn: editingBook.isbn,
+        },
+      })
       return
     }
     await createMutation.mutateAsync(values)

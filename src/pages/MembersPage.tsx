@@ -77,7 +77,13 @@ export function MembersPage() {
 
   async function handleSubmit(values: MemberFormValues) {
     if (editingMember && editingMember.memberId) {
-      await updateMutation.mutateAsync({ memberId: editingMember.memberId, values })
+      await updateMutation.mutateAsync({
+        memberId: editingMember.memberId,
+        values: {
+          ...values,
+          memberId: editingMember.memberId,
+        },
+      })
       return
     }
     await createMutation.mutateAsync(values)

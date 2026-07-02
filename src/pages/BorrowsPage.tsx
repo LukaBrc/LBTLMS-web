@@ -15,6 +15,7 @@ import { normalizeApiError } from '../lib/errors'
 
 const ACTIVE_QUERY_KEY = ['borrows', 'active']
 const OVERDUE_QUERY_KEY = ['borrows', 'overdue']
+const BOOKS_QUERY_KEY = ['books']
 
 type BorrowAction = 'borrow' | 'return'
 
@@ -41,6 +42,7 @@ export function BorrowsPage() {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ACTIVE_QUERY_KEY }),
         queryClient.invalidateQueries({ queryKey: OVERDUE_QUERY_KEY }),
+        queryClient.invalidateQueries({ queryKey: BOOKS_QUERY_KEY }),
       ])
     },
     onError: (error) => {
@@ -55,6 +57,7 @@ export function BorrowsPage() {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ACTIVE_QUERY_KEY }),
         queryClient.invalidateQueries({ queryKey: OVERDUE_QUERY_KEY }),
+        queryClient.invalidateQueries({ queryKey: BOOKS_QUERY_KEY }),
       ])
     },
     onError: (error) => {
